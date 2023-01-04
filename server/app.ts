@@ -13,6 +13,7 @@ app.use(express.json());
 app.use(bodyParser.urlencoded({
   extended: true
 }));
+
 const puppyData = require('./puppyData.json');
 
 interface IPuppies {
@@ -22,16 +23,13 @@ interface IPuppies {
   dob: string
 }
 
-app.get('/api/test', (_req: Request, res: Response) => {
-  return res.status(200).json({ test: 'is working as it should' });
-});
-
 app.get('/api/puppies', (_req: Request, res: Response) => {
   console.log('get request for all puppies working')
   return res.status(200).json(puppyData);
 });
 
 app.get('/api/puppies/:id', (req: Request, res: Response) => {
+  console.log('get request for one puppy working')
   const id = Number(req.params.id);
   const puppy = puppyData.puppies.find((puppy: IPuppies) => puppy.puppyId === id);
   if (puppy) {
@@ -42,6 +40,7 @@ app.get('/api/puppies/:id', (req: Request, res: Response) => {
 });
 
 app.post('/api/puppies', (req: Request, res: Response) => {
+  console.log('post request for one puppy working')
   const newPuppyId = Number(puppyData.puppies[puppyData.puppies.length -1].puppyId) + 1;
   const newPuppy = {
     puppyId: newPuppyId,
@@ -55,6 +54,7 @@ app.post('/api/puppies', (req: Request, res: Response) => {
 });
 
 app.put('/api/puppies/:id', (req: Request, res: Response) => {
+  console.log('put request for one puppy working')
   const id = Number(req.params.id);
   const puppy = puppyData.puppies.find((puppy: IPuppies) => puppy.puppyId === id);
   if (puppy) {
@@ -68,6 +68,7 @@ app.put('/api/puppies/:id', (req: Request, res: Response) => {
 });
 
 app.delete('/api/puppies/:id', (req: Request, res: Response) => {
+  console.log('delete request for one puppy working')
   const id = Number(req.params.id);
   const puppy = puppyData.puppies.find((puppy: IPuppies) => puppy.puppyId === id);
   if (puppy) {
