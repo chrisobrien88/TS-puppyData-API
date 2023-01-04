@@ -1,0 +1,28 @@
+{
+    "puppies": [
+        {
+            "puppyId": "1",
+            "name": "peggy",
+            "dob": "2021-01-05",
+            "breed": "labradoodle"
+        },
+        {
+            "puppyId": "2",
+            "name": "tiggy",
+            "dob": "2016-08-15",
+            "breed": "cockerpoo"
+        },
+        {
+            "puppyId": "3",
+            "name": "hettie",
+            "dob": "2018-06-03",
+            "breed": "sprockerpoo"
+        },
+        {
+            "puppyId": "4",
+            "name": "phoebe",
+            "dob": "20008-12-25",
+            "breed": "border terrier"
+        }
+    ]
+}
