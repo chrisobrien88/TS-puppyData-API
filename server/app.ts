@@ -4,6 +4,11 @@ import bodyParser from 'body-parser';
 
 const app: Application = express();
 
+app.use((_req: Request, res: Response, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  next();
+});
+
 app.use(express.json());
 app.use(bodyParser.urlencoded({
   extended: true
@@ -22,7 +27,7 @@ app.get('/api/test', (_req: Request, res: Response) => {
 });
 
 app.get('/api/puppies', (_req: Request, res: Response) => {
-  console.log('get request for puppies working')
+  console.log('get request for all puppies working')
   return res.status(200).json(puppyData);
 });
 
