@@ -10,6 +10,13 @@ app.use(bodyParser.urlencoded({
 }));
 const puppyData = require('./puppyData.json');
 
+interface Puppies {
+  puppyId: number;
+  name: string;
+  breed: string;
+  dob: string
+}
+
 app.get('/api/test', (_req: Request, res: Response) => {
   return res.status(200).json({ test: 'is working as it should' });
 });
@@ -20,8 +27,8 @@ app.get('/api/puppies', (_req: Request, res: Response) => {
 });
 
 app.get('/api/puppies/:id', (req: Request, res: Response) => {
-  const id = req.params.id;
-  const puppy = puppyData.puppies.find((puppy: any) => puppy.puppyId === id);
+  const id = Number(req.params.id);
+  const puppy = puppyData.puppies.find((puppy: Puppies) => puppy.puppyId === id);
   if (puppy) {
     return res.status(200).json(puppy);
   } else {
@@ -34,7 +41,7 @@ app.post('/api/puppies', (req: Request, res: Response) => {
   const newPuppy = {
     puppyId: newPuppyId,
     name: req.body.name,
-    age: req.body.dob,
+    dob: req.body.dob,
     breed: req.body.breed,
   }
   puppyData.puppies.push(newPuppy);
@@ -43,8 +50,8 @@ app.post('/api/puppies', (req: Request, res: Response) => {
 });
 
 app.put('/api/puppies/:id', (req: Request, res: Response) => {
-  const id = req.params.id;
-  const puppy = puppyData.puppies.find((puppy: any) => puppy.puppyId === id);
+  const id = Number(req.params.id);
+  const puppy = puppyData.puppies.find((puppy: Puppies) => puppy.puppyId === id);
   if (puppy) {
     puppy.name = req.body.name;
     puppy.dob = req.body.dob;
@@ -56,8 +63,8 @@ app.put('/api/puppies/:id', (req: Request, res: Response) => {
 });
 
 app.delete('/api/puppies/:id', (req: Request, res: Response) => {
-  const id = req.params.id;
-  const puppy = puppyData.puppies.find((puppy: any) => puppy.puppyId === id);
+  const id = Number(req.params.id);
+  const puppy = puppyData.puppies.find((puppy: Puppies) => puppy.puppyId === id);
   if (puppy) {
     const index = puppyData.puppies.indexOf(puppy);
     puppyData.puppies.splice(index, 1);
