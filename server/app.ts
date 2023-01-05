@@ -4,8 +4,11 @@ import bodyParser from 'body-parser';
 
 const app: Application = express();
 
-app.use((_req: Request, res: Response, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
+
+app.use(function(_, res, next) {
+  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
   next();
 });
 
@@ -41,12 +44,13 @@ app.get('/api/puppies/:id', (req: Request, res: Response) => {
 
 app.post('/api/puppies', (req: Request, res: Response) => {
   console.log('post request for one puppy working')
+  const newPuppyData = JSON.parse(req.body.data);  
   const newPuppyId = Number(puppyData.puppies[puppyData.puppies.length -1].puppyId) + 1;
   const newPuppy = {
     puppyId: newPuppyId,
-    name: req.body.name,
-    dob: req.body.dob,
-    breed: req.body.breed,
+    name: newPuppyData.name,
+    dob: newPuppyData.dob,
+    breed: newPuppyData.breed
   }
   puppyData.puppies.push(newPuppy);
   console.log(newPuppy)
