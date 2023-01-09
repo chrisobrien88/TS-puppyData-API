@@ -22,6 +22,8 @@ export const fetchAPuppy = async (id: Number) => {
     return data;
     }
 
+
+
 export const postNewPuppy = async (puppy: IPuppy) => {
     const response = await Axios.post(`http://localhost:3000/api/puppies`, puppy);
     const data = await response.data;

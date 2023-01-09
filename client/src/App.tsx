@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Axios from 'axios';
 import puppyLogo from './puppy512.png';
+import puppyFavicon from './assets/favicon-32x32.png'
 import './App.css';
 import './puppy.css'
+import EditPuppy from './components/EditPuppy';
 
 interface IPuppy {
   puppyId: Number;
@@ -26,8 +28,13 @@ function App() {
   const [trigger, setTrigger] = useState<Boolean>(false);
   const [puppyTrigger, setPuppyTrigger] = useState<Boolean>(false);
   const [addNewPuppy, setAddNewPuppy] = useState<Boolean>(false);
+  const [editPuppy, setEditPuppy] = useState<Boolean>(false);
+  const [editPuppyName, setEditPuppyName] = useState<Boolean>(false);
+  const [editPuppyDOB, setEditPuppyDOB] = useState<Boolean>(false);
+  const [editPuppyBreed, setEditPuppyBreed] = useState<Boolean>(false);
 
-  
+  const [more, setMore] = useState<Boolean>(false);
+
   const fetchAllPuppiesTrigger = () => {
     setTrigger(!trigger);
     setPuppy(null)
@@ -41,7 +48,6 @@ function App() {
       setPuppies({
         puppies: data
       })
-      // setPuppy(null)
    }
     fetchAllPuppies();
   }, [trigger])
@@ -89,63 +95,101 @@ function App() {
     }
     createMessage();
   }
+
+  const updatePuppy = async (id: String) => {
+    const newPuppyPost = {
+      method: 'PUT',
+      headers: { 'Origin': 'http://localhost:3001',
+      'Content-Type': 'application/json',
+     },
+     data: JSON.stringify(puppy)
+    }
+    const response = await Axios.put(`http://localhost:8080/api/puppies/${id}`, newPuppyPost);
+    const data = await response.data;
+    setPuppyId(data.puppyId.toString())
+    setEditPuppy(false);
+  }
+
+  const handleEditPuppy = (type: String) => {
+    if(type === 'cancel') {
+      setEditPuppyName(false);
+      setEditPuppyDOB(false);
+      setEditPuppyBreed(false);
+      setEditPuppy(false);
+    } else {
+      setEditPuppyName(true);
+      setEditPuppyDOB(true);
+      setEditPuppyBreed(true);
+      setEditPuppy(true);
+    }
+  }
+
+  const goToTop = () => {
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+    });
+  };
+
+  
+  const allPuppiesSection = useRef<HTMLDivElement>(null);
+
+  const scrollToPuppies = () => {
+    window.scrollTo({
+      behavior: 'smooth',
+      top: allPuppiesSection.current?.offsetTop
+    });
+  };
   
   return (
     <div className="App">
       <header className="App-header">
-        <p>Puppies</p>
-        <img src={puppyLogo} className="App-logo" alt="logo" />
+        <div className='row nav-search'>
+          <img src={puppyFavicon} alt="puppy" />
+          <form >
+            <label>
+              <input 
+                type="text" 
+                name="puppyId"
+                value={puppyId.toString()} 
+                onChange={(e)=>setPuppyId(e.target.value)} 
+                placeholder='Search for a Puppy using their Id'
+              />
+            </label>
+          </form>
+          <button onClick={()=> {setPuppyTrigger(!puppyTrigger)}}>Search</button>
+          <button onClick={()=> {fetchAllPuppiesTrigger(); scrollToPuppies()}}>See all Puppies</button>
+        </div>
+        <button onClick={()=>setAddNewPuppy(!addNewPuppy)}> Add a Puppy </button>
+      </header>
      
       <main>
-        <form >
-          <label>
-            <p>search for an individual Puppy using their ID:</p>
-            <input 
-              type="text" 
-              name="puppyId"
-              value={puppyId.toString()} 
-              onChange={(e)=>setPuppyId(e.target.value)} 
-              placeholder='e.g. 1, 2, 3...'
-            />
-          </label>
-        </form>
-        {puppy?
-          <>
-            <button onClick={()=> {setPuppyTrigger(!puppyTrigger)}}>Search again</button>
-
-          </>
-          :
-          <>
-            <button onClick={()=> {setPuppyTrigger(!puppyTrigger)}}>Search</button>
-
-          </>
-        }
-        {!puppies?
-          <button onClick={fetchAllPuppiesTrigger}>See ALL the Puppies</button> :
-          null
-        }
-
         <article>
           {addNewPuppy?
-          <>
-            <form>
-              <label>
-                Name:
-                <input type="text" name="name" onChange={(e)=>setNewPuppy({...newPuppy, name: e.target.value})}/>
-              </label>
-              <label>
-                DOB:
-                <input type="date" name="dob" onChange={(e)=>setNewPuppy({...newPuppy, dob: e.target.value})}/>
-              </label>
-              <label>
-                Breed:
-                <input type="text" name="breed" onChange={(e)=>setNewPuppy({...newPuppy, breed: e.target.value})}/>
-              </label>
+          <div className='add-puppy-form column' >
+            <form className="input column">
+              <label>Name:</label>
+              <input type="text" name="name" onChange={(e)=>setNewPuppy({...newPuppy, name: e.target.value})}/>
+              <label>DOB:</label>
+              <input type="date" name="dob" onChange={(e)=>setNewPuppy({...newPuppy, dob: e.target.value})}/>
+              <label>Breed:</label>
+              <input type="text" name="breed" onChange={(e)=>setNewPuppy({...newPuppy, breed: e.target.value})}/>
             </form>
-            <button onClick={()=>postNewPuppy(newPuppy)}>Add a Puppy</button>
-          </>
-          : <button onClick={()=>setAddNewPuppy(!addNewPuppy)}><h2>Add a Puppy</h2></button>}
+            <button onClick={()=>postNewPuppy(newPuppy)}>Submit</button>
+            <button onClick={()=>setAddNewPuppy(!addNewPuppy)}> X </button>
+          </div> : 
+          null}
         </article>
+
+        <article className='welcome-page'>
+            <section className='welcome-page-section'>
+              <div className='welcome-page-text-container'>
+                <h1>showmethedoggos.com</h1>
+                <h2>Because the internet needs another place to put your pet photos and data</h2>
+                <button className='welcome-page-button' onClick={scrollToPuppies}>See Doggos</button>
+              </div>
+            </section>
+          </article>
 
         <article>
           {puppy?
@@ -154,13 +198,60 @@ function App() {
                 <p>{message}</p> :
                 null
               }
-              <div className='puppy-list'>
-                <div key={Number(puppy.puppyId)} className='puppy-card'>
-                  <h3>{puppy.name}</h3>
-                  <p>Born: {puppy.dob}</p>
-                  <p>Breed: {puppy.breed}</p>
-                  <p>Puppy Id number: {puppy.puppyId.toString()}</p>
-                  <button onClick={()=>deletePuppy(puppy.puppyId.toString())}>Delete</button>
+              <div className='puppy'>
+                <div key={Number(puppy.puppyId)} className='puppy-card-solo'>
+               
+                  <>
+                    <form>
+                      <EditPuppy 
+                        editState={editPuppyName} 
+                        puppyValue={puppy.name} 
+                        editTarget="name" 
+                        setPuppy={setPuppy} 
+                        puppy={puppy} 
+                        setEditState={setEditPuppyName}
+                        puppyId={puppyId}
+                        updatePuppy={updatePuppy}
+                        inputType="text"
+                     
+                      />
+                      <EditPuppy
+                        editState={editPuppyDOB}
+                        puppyValue={puppy.dob}
+                        editTarget="dob"
+                        setPuppy={setPuppy}
+                        puppy={puppy}
+                        setEditState={setEditPuppyDOB}
+                        puppyId={puppyId}
+                        updatePuppy={updatePuppy}
+                        inputType="date"
+                      />
+                      <EditPuppy
+                        editState={editPuppyBreed}
+                        puppyValue={puppy.breed}
+                        editTarget="breed"
+                        setPuppy={setPuppy}
+                        puppy={puppy}
+                        setEditState={setEditPuppyBreed}
+                        puppyId={puppyId}
+                        updatePuppy={updatePuppy}
+                        inputType="text"
+                      />
+                      <p>Puppy Id number: {puppy.puppyId.toString()}</p>
+                    </form>
+                  </> 
+                  
+                  {more?
+                    <>
+                      <button onClick={()=>deletePuppy(puppy.puppyId.toString())}>Delete</button>
+                      {editPuppy?
+                        <button onClick={()=>handleEditPuppy('cancel')}>Cancel</button> :
+                      <button onClick={()=>handleEditPuppy('edit')}>Edit puppy</button>}
+                      <br></br>
+                      <button onClick={()=>setMore(false)}>^</button>
+                    </> : 
+                    <button onClick={()=>setMore(true)}>options</button>
+                  }
                 </div>
               </div> 
             </> :
@@ -170,7 +261,7 @@ function App() {
 
         <article>
             {puppies?
-              <div className='puppy-list'>
+              <div className='puppy-list' ref={allPuppiesSection}>
                 {puppies.puppies.map((puppy) => {
                   return (
                     <div key={Number(puppy.puppyId)} className='puppy-card puppy-card-inlist' onClick={()=>{
@@ -185,12 +276,10 @@ function App() {
               </div> :
               <button onClick={fetchAllPuppiesTrigger}>See ALL the Puppies</button>
             }
-        </article>
-
-          
+        </article>          
       </main>
-      {/* header will be moved! */}
-      </header>
+      <button onClick={goToTop}>Back to Top</button>
+      
     </div>
   );
 }

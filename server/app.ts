@@ -23,7 +23,8 @@ interface IPuppies {
   puppyId: number;
   name: string;
   breed: string;
-  dob: string
+  dob: string;
+  image: string;
 }
 
 app.get('/api/puppies', (_req: Request, res: Response) => {
