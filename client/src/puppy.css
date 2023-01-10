@@ -4,17 +4,27 @@
   flex-wrap: wrap;
   justify-content: center;
   margin: 10px 10px;
+  gap: 10px;
 }
 
 .puppy-card {
-  display: block;
-  width: 300px;
-  height: 400px;
+  display: flex;
+  flex-direction: column;
+  width: auto;
+  min-width: 200px;
   background-color: rgb(93, 93, 93);
   border-radius: 4px;
   box-shadow: 4px 4px 4px 1px rgba(176, 176, 176, 0.6);
   overflow: hidden;
-    margin: 10px 10px;
+  transition: box-shadow 0.3s ease-in-out;
+  cursor: pointer;
+}
+
+.puppy-card>img {
+  width: 100%;
+  max-width: 200px;
+  height: auto;
+  object-fit: cover;
 }
 
 .puppy-card-inlist:hover {

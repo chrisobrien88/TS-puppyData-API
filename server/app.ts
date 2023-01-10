@@ -51,7 +51,8 @@ app.post('/api/puppies', (req: Request, res: Response) => {
     puppyId: newPuppyId,
     name: newPuppyData.name,
     dob: newPuppyData.dob,
-    breed: newPuppyData.breed
+    breed: newPuppyData.breed,
+    image: newPuppyData.image
   }
   puppyData.puppies.push(newPuppy);
   console.log(newPuppy)
@@ -60,12 +61,14 @@ app.post('/api/puppies', (req: Request, res: Response) => {
 
 app.put('/api/puppies/:id', (req: Request, res: Response) => {
   console.log('put request for one puppy working')
+
   const id = Number(req.params.id);
   const puppy = puppyData.puppies.find((puppy: IPuppies) => puppy.puppyId === id);
+  const putData = JSON.parse(req.body.data);
   if (puppy) {
-    puppy.name = req.body.name;
-    puppy.dob = req.body.dob;
-    puppy.breed = req.body.breed;
+    puppy.name = putData.name;
+    puppy.dob = putData.dob;
+    puppy.breed = putData.breed;
     return res.status(200).json(puppy);
   } else {
     return res.status(404).json({ error: 'Puppy not found' });

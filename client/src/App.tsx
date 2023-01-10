@@ -1,16 +1,19 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Axios from 'axios';
-import puppyLogo from './puppy512.png';
+// import puppyLogo from './puppy512.png';
 import puppyFavicon from './assets/favicon-32x32.png'
 import './App.css';
 import './puppy.css'
 import EditPuppy from './components/EditPuppy';
+import FetchImages from './components/FetchImages';
+import AddNewPuppy from './components/AddNewPuppy';
 
 interface IPuppy {
   puppyId: Number;
   name: String;
   dob: String;
   breed: String;
+  image: String;
 }
 
 interface IPuppies {
@@ -21,7 +24,7 @@ function App() {
 
   const [puppyId, setPuppyId] = useState<String>("");
   const [puppy, setPuppy] = useState<IPuppy | null>(null);
-  const [newPuppy, setNewPuppy] = useState<IPuppy>({puppyId: 0, name: '', dob: '', breed: ''});
+  const [newPuppy, setNewPuppy] = useState<IPuppy>({puppyId: 0, name: '', dob: '', breed: '', image: ''});
   const [puppies, setPuppies] = useState<IPuppies | null>(null);
   const [message, setMessage] = useState<String>("");
   
@@ -58,15 +61,14 @@ function App() {
       const response = await Axios.get(`http://localhost:8080/api/puppies/${id}`);
       setPuppies(null)
       setPuppy(response.data)
-    }
-    fetchAPuppy(puppyId);
-    setPuppyId("");
-  }, [puppyTrigger])
+    }    
+    fetchAPuppy(puppyId);    
+  }, [puppyTrigger, puppyId])
 
   const postNewPuppy = async (newPuppy: IPuppy) => {
     const newPuppyPost = {
       method: 'POST',
-      headers: { 'Origin': 'http://localhost:3001',
+      headers: { 'Origin': 'http://localhost:3000',
       'Content-Type': 'application/json',
      },
       data: JSON.stringify(newPuppy)
@@ -79,35 +81,38 @@ function App() {
 }
 
   const deletePuppy = async (id: String) => {
-    const newPuppyPost = {
+    const deletePuppy = {
       method: 'DELETE',
-      headers: { 'Origin': 'http://localhost:3001',
+      headers: { 'Origin': 'http://localhost:3000',
       'Content-Type': 'application/json',
      }
-    }
-    const response = await Axios.delete(`http://localhost:8080/api/puppies/${id}`);
+    }    
+    const response = await Axios.delete(`http://localhost:8080/api/puppies/${id}`, deletePuppy);
     const data = await response.data;
     setMessage("Puppy " + data.name + " has been deleted!")
     const createMessage = () => {
       setTimeout (() => {
         setMessage("");
-      }, 3000)
+      }, 2000)
     }
     createMessage();
   }
 
-  const updatePuppy = async (id: String) => {
+  const updatePuppy = async (id: String) => {    
     const newPuppyPost = {
       method: 'PUT',
-      headers: { 'Origin': 'http://localhost:3001',
+      headers: { 'Origin': 'http://localhost:3000',
       'Content-Type': 'application/json',
      },
      data: JSON.stringify(puppy)
     }
+    console.log(id, puppyId)
     const response = await Axios.put(`http://localhost:8080/api/puppies/${id}`, newPuppyPost);
+    console.log('response',response);
+    
     const data = await response.data;
     setPuppyId(data.puppyId.toString())
-    setEditPuppy(false);
+    // setEditPuppy(false);
   }
 
   const handleEditPuppy = (type: String) => {
@@ -164,9 +169,12 @@ function App() {
       </header>
      
       <main>
+        
         <article>
           {addNewPuppy?
-          <div className='add-puppy-form column' >
+          <>
+          <AddNewPuppy setNewPuppy={setNewPuppy} newPuppy={newPuppy} postNewPuppy={postNewPuppy} setAddNewPuppy={setAddNewPuppy} addNewPuppy={addNewPuppy}/>
+          {/* <div className='add-puppy-form column' >
             <form className="input column">
               <label>Name:</label>
               <input type="text" name="name" onChange={(e)=>setNewPuppy({...newPuppy, name: e.target.value})}/>
@@ -174,10 +182,13 @@ function App() {
               <input type="date" name="dob" onChange={(e)=>setNewPuppy({...newPuppy, dob: e.target.value})}/>
               <label>Breed:</label>
               <input type="text" name="breed" onChange={(e)=>setNewPuppy({...newPuppy, breed: e.target.value})}/>
+              <label>Image url:</label>
+              <input type="text" name="iamge" onChange={(e)=>setNewPuppy({...newPuppy, image: e.target.value})}/>
             </form>
             <button onClick={()=>postNewPuppy(newPuppy)}>Submit</button>
             <button onClick={()=>setAddNewPuppy(!addNewPuppy)}> X </button>
-          </div> : 
+          </div> */}
+          </> : 
           null}
         </article>
 
@@ -238,6 +249,7 @@ function App() {
                         inputType="text"
                       />
                       <p>Puppy Id number: {puppy.puppyId.toString()}</p>
+                      <img src={puppy.image.toString()}></img>
                     </form>
                   </> 
                   
@@ -269,6 +281,7 @@ function App() {
                       setPuppyTrigger(!puppyTrigger);
                     }}>
                       <h4>{puppy.name}</h4>
+                      {puppy.image? <img src={puppy.image.toString()}></img>: null}
                       <p>{puppy.name}'s Id number: {puppy.puppyId.toString()}</p>
                     </div>
                   )
@@ -279,6 +292,7 @@ function App() {
         </article>          
       </main>
       <button onClick={goToTop}>Back to Top</button>
+      {/* <FetchImages /> */}
       
     </div>
   );
