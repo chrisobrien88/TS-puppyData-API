@@ -36,10 +36,25 @@ app.get('/api/puppies/:id', (req: Request, res: Response) => {
   console.log('get request for one puppy working')
   const id = Number(req.params.id);
   const puppy = puppyData.puppies.find((puppy: IPuppies) => puppy.puppyId === id);
+  console.log(puppy);
+  
   if (puppy) {
     return res.status(200).json(puppy);
   } else {
-    return res.status(404).json({ error: 'Puppy not found' });
+    console.log('Puppy not found');
+    return res.status(204).json({error: 'Puppy not found'});
+  }
+  
+});
+
+app.get('/api/puppies/name/:name', (req: Request, res: Response) => {
+  console.log('NAME get request for one puppy working')
+  const puppyName = req.params.name;
+  const puppy = puppyData.puppies.find((puppy: IPuppies) => puppy.name === puppyName);
+  if (puppy) {
+    return res.status(200).json(puppy);
+  } else {
+    return res.status(204).json({ error: 'Puppy not found' });
   }
 });
 

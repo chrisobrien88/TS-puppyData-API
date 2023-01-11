@@ -17,9 +17,10 @@ interface IEditPuppy {
     puppyId: String;
     updatePuppy: Function;
     inputType: String;
+    children: any;
 }
 
-const EditPuppy = ({editState, puppyValue, editTarget, setPuppy, puppy, setEditState, puppyId, updatePuppy, inputType}: IEditPuppy) => {
+const EditPuppy = ({editState, puppyValue, editTarget, setPuppy, puppy, setEditState, puppyId, updatePuppy, inputType, children}: IEditPuppy) => {
   return (
     <div>
         {editState?
@@ -33,8 +34,9 @@ const EditPuppy = ({editState, puppyValue, editTarget, setPuppy, puppy, setEditS
                     }>confirm</button>
                 </div> :
                 <div className='row'>
-                    <p className='edit-puppy-text' onClick={()=>setEditState(true)}>{puppyValue}</p>
-                    <button onClick={(e)=>{setEditState(true); e.preventDefault()}}>edit</button>
+                    <p className='edit-puppy-text'>{children} </p>
+                    <h3>{puppyValue}</h3>
+                    {/* <button onClick={(e)=>{setEditState(true); e.preventDefault()}}>edit</button> */}
                 </div>
                 }
     </div>

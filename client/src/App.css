@@ -1,9 +1,11 @@
-.App {
+* {
   box-sizing: border-box;
+  margin: 0;
 }
 
 .App-header {
   background-color: #282c34;
+  height: 64px;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -29,6 +31,7 @@
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
+  gap: 10px;
 }
 
 .column {
@@ -36,6 +39,14 @@
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
+}
+
+.m5 {
+  margin: 5px;
+}
+
+.m10 {
+  margin: 10px;
 }
 
 .App-link {
@@ -51,17 +62,6 @@
   margin-top: 20px;
 }
 
-.puppy-card-solo {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  margin: 20px;
-  padding: 20px;
-  border: 1px solid black;
-  border-radius: 10px;
-}
-
 .welcome-page {
   width: 100%;
   height: 75vh;
@@ -75,7 +75,6 @@
 .welcome-page-section:nth-child(1) {
   background-image: url("./assets/dogBackground.jpg");
   background-size: cover;
-  
 }
 
 .welcome-page-text-container {
@@ -115,4 +114,18 @@
 
 .choose-image > div > img:hover{
   box-shadow: 0 0 5px 1px rgba(255, 255, 255, 0.5);
+}
+
+.error-message-dropdown {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 50px;
+  margin-top: 64px;
+  width: 100%;
+  background-color: rgb(40, 44, 52, 0.5);
+  color: white;
+  position:absolute;
+  z-index: 2;
 }
