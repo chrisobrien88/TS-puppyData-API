@@ -1,16 +1,10 @@
-import React, { useState, useEffect, useRef, useContext, createContext } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Axios from 'axios';
-// import puppyLogo from './puppy512.png';
 import puppyFavicon from './assets/favicon-32x32.png'
 import './App.css';
 import './puppy.css';
 import EditPuppy from './components/EditPuppy';
 import AddNewPuppy from './components/AddNewPuppy';
-import PuppyModal from './components/PuppyModal';
-import { ThemeContext } from './context/context'
-import { fetchPuppies } from './tools/fetchPuppies';
-
-
 
 interface IPuppy {
   puppyId: Number;
@@ -18,6 +12,7 @@ interface IPuppy {
   dob: String;
   breed: String;
   image: String;
+  imageLarge: String;
 }
 
 interface IPuppies {
@@ -29,7 +24,7 @@ function App() {
 
   const [puppyId, setPuppyId] = useState<string>("");
   const [puppy, setPuppy] = useState<IPuppy | null>(null);
-  const [newPuppy, setNewPuppy] = useState<IPuppy>({puppyId: 0, name: '', dob: '', breed: '', image: ''});
+  const [newPuppy, setNewPuppy] = useState<IPuppy>({puppyId: 0, name: '', dob: '', breed: '', image: '', imageLarge: ''});
   const [puppies, setPuppies] = useState<IPuppies | null>(null);
   const [message, setMessage] = useState<String>("");
   
@@ -44,6 +39,7 @@ function App() {
 
   const [more, setMore] = useState<Boolean>(false);
 
+  
   // const fetchAllPuppiesTrigger = () => {
   //   setTrigger(!trigger);
   //   setPuppy(null)
@@ -80,7 +76,7 @@ function App() {
         setPuppy(response.data)
         setPuppyId(response.data.puppyId.toString())}
       }
-    }
+    }    
     setPuppy(null);
     fetchAPuppy(puppyId); 
     setTimeout(() => {
@@ -88,6 +84,7 @@ function App() {
     }, 400)  
     setTimeout(() => {
       setSearchError('');
+
     }, 4000)  
   }, [puppyTrigger])
 
@@ -141,10 +138,7 @@ function App() {
      },
      data: JSON.stringify(puppy)
     }
-    console.log(id, puppyId)
-    const response = await Axios.put(`http://localhost:8080/api/puppies/${id}`, newPuppyPost);
-    console.log('response',response);
-    
+    const response = await Axios.put(`http://localhost:8080/api/puppies/${id}`, newPuppyPost);    
     const data = await response.data;
     setPuppyId(data.puppyId.toString())
     // setEditPuppy(false);
@@ -175,11 +169,9 @@ function App() {
   const allPuppiesSection = useRef<HTMLDivElement>(null);
   const puppySection = useRef<HTMLDivElement>(null);
 
+
   const scrollToPuppies = () => {
-    window.scrollTo({
-      behavior: 'smooth',
-      top: allPuppiesSection.current?.offsetTop
-    });
+    allPuppiesSection.current?.scrollIntoView({behavior: 'smooth', block: 'start'});
   };
 
   const scrollToPuppy = () => {
@@ -196,6 +188,13 @@ function App() {
     }, 500)
   }
 
+  const displayMessage = (string: string) => {
+    setMessage(string);
+    setTimeout (() => {
+      setMessage("");
+    }, 2000)
+  }
+
   
   return (
     <div className="App">
@@ -207,130 +206,132 @@ function App() {
                 <input 
                   type="text" 
                   name="puppyId"
-                  value={puppyId.toString()} 
+                  // value={puppyId.toString()} 
                   onChange={(e)=>setPuppyId(e.target.value)} 
                   placeholder='name or Id number' />
-            <button onClick={()=> {setPuppyTrigger(!puppyTrigger)}}>search</button>
+            <button className="button-secondary" onClick={()=> {setPuppyTrigger(!puppyTrigger)}}>search</button>
           </div>
         </div>
         <div className='row m10'>
-          <button onClick={seePuppies}>See all Puppies</button>
-          <button onClick={()=>setAddNewPuppy(!addNewPuppy)}> Add a Puppy </button>
+          <button className="button-secondary" onClick={seePuppies}>See all Puppies</button>
+          <button className="button-primary" onClick={()=>{setAddNewPuppy(!addNewPuppy); goToTop()}}> Add a Puppy </button>
         </div>
 
       </header>
      
       <main>
+        {addNewPuppy?
+          <AddNewPuppy setNewPuppy={setNewPuppy} newPuppy={newPuppy} postNewPuppy={postNewPuppy} setAddNewPuppy={setAddNewPuppy} addNewPuppy={addNewPuppy}/>
+          : 
+          null
+        }
         
-        <article>
-          {addNewPuppy?
-          <>
-          <AddNewPuppy setNewPuppy={setNewPuppy} newPuppy={newPuppy} postNewPuppy={postNewPuppy} setAddNewPuppy={setAddNewPuppy} addNewPuppy={addNewPuppy}>
-            <p>hello world</p>
-          </AddNewPuppy>
-          </> : 
-          null}
-        </article>
 
         <article className='welcome-page'>
             <section className='welcome-page-section'>
-              <div className='welcome-page-text-container'>
+              <div className='welcome-page-container'>
+                <div className='welcome-page-text'>
                 <h1>showmethedoggos.com</h1>
                 <h2>Because the internet needs another place to put your pet photos and data</h2>
-                <button className='welcome-page-button' onClick={seePuppies}>See all Doggos</button>
-                <p>or</p>
-                <form>
-                  <label>
-                  <input 
+                <button className="button-primary" onClick={seePuppies}>See all Doggos</button>
+                  <div className='search-bar'>
+                  <input
                     type="text" 
                     name="puppyId"
                     value={puppyId.toString()} 
                     onChange={(e)=>setPuppyId(e.target.value)} 
                     placeholder='insert Id number...'
                   />
-                  </label>
-                </form>
-                <button onClick={()=> {setPuppyTrigger(!puppyTrigger)}}>Search</button>
+                <button className="button-secondary" onClick={()=> {setPuppyTrigger(!puppyTrigger)}}>Search</button>
+                  </div>
+                </div>
 
               </div>
             </section>
           </article>
-        
-
-        
-          {puppy?
-            <>
-              <div key={Number(puppy.puppyId)} className='puppy-card-solo' ref={puppySection}>
-                <img src={puppy.image.toString()}></img>
-                <div className="column puppy-details">
-                  <button onClick={()=>{setPuppy(null); handleEditPuppy("set to false");}}>close</button>
-                  
-                    <EditPuppy 
-                      editState={editPuppyName} 
-                      puppyValue={puppy.name} 
-                      editTarget="name" 
-                      setPuppy={setPuppy} 
-                      puppy={puppy} 
-                      setEditState={setEditPuppyName}
-                      puppyId={puppyId}
-                      updatePuppy={updatePuppy}
-                      inputType="text">
-                        
+          <article className='puppy-container' ref={puppySection}>
+            {puppy?
+              <>
+                <div key={Number(puppy.puppyId)} className='puppy-card-solo'>
+                <button className="button-tertiary close" onClick={()=>{setPuppy(null); handleEditPuppy("set to false");}}>X</button>
+                <button className="button-tertiary next" onClick={()=>{setPuppyId((Number(puppyId)+1).toString()); setPuppyTrigger(!puppyTrigger)}}>&gt;</button>
+                {puppy.imageLarge? <img className="puppy-image" src={puppy.imageLarge.toString()}></img>: <h2>LOADING...</h2>}
+                <button className="button-tertiary previous" onClick={()=>{setPuppyId((Number(puppyId)-1).toString()); setPuppyTrigger(!puppyTrigger)}}>&lt;</button>
+                <div className="column puppy-details-container">
+                  <div className="column puppy-details">
+                      <EditPuppy 
+                        editState={editPuppyName} 
+                        puppyValue={puppy.name} 
+                        editTarget="name" 
+                        setPuppy={setPuppy} 
+                        puppy={puppy} 
+                        setEditState={setEditPuppyName}
+                        puppyId={puppyId}
+                        updatePuppy={updatePuppy}
+                        inputType="text">
+                          
+                        </EditPuppy>
+                      <EditPuppy
+                        editState={editPuppyDOB}
+                        puppyValue={puppy.dob}
+                        editTarget="dob"
+                        setPuppy={setPuppy}
+                        puppy={puppy}
+                        setEditState={setEditPuppyDOB}
+                        puppyId={puppyId}
+                        updatePuppy={updatePuppy}
+                        inputType="date">
+                          born:
                       </EditPuppy>
-                    <EditPuppy
-                      editState={editPuppyDOB}
-                      puppyValue={puppy.dob}
-                      editTarget="dob"
-                      setPuppy={setPuppy}
-                      puppy={puppy}
-                      setEditState={setEditPuppyDOB}
-                      puppyId={puppyId}
-                      updatePuppy={updatePuppy}
-                      inputType="date">
-                        date of birth:
-                    </EditPuppy>
-                    <EditPuppy
-                      editState={editPuppyBreed}
-                      puppyValue={puppy.breed}
-                      editTarget="breed"
-                      setPuppy={setPuppy}
-                      puppy={puppy}
-                      setEditState={setEditPuppyBreed}
-                      puppyId={puppyId}
-                      updatePuppy={updatePuppy}
-                      inputType="text">
-                        breed:
-                    </EditPuppy>
-                  
-                    <p>Puppy Id number: {puppy.puppyId.toString()}</p>
-                  { more?
-                      <>
-                        
-                        {message?
-                          <p>{message}</p> :
-                          null
-                        }
-                        {editPuppy?
-                        <>
-                          <button onClick={()=>setTrigger(!trigger)}>Update puppy</button>
-                          <button onClick={()=>handleEditPuppy('set to false')}>Cancel</button>
-                        </> :
-                        <button onClick={()=>handleEditPuppy('edit')}>Edit puppy</button>}
-                        <br></br>
-                        <button onClick={()=>deletePuppy(puppy.puppyId.toString())}>Delete {puppy.name}</button>
-                        <button onClick={()=>setMore(false)}>^</button>
-                      </> : 
-                      <button onClick={()=>setMore(true)}>options</button>
-                    }
-                </div>
-              </div> 
-            </> :
-            null
-            }
+                      <EditPuppy
+                        editState={editPuppyBreed}
+                        puppyValue={puppy.breed}
+                        editTarget="breed"
+                        setPuppy={setPuppy}
+                        puppy={puppy}
+                        setEditState={setEditPuppyBreed}
+                        puppyId={puppyId}
+                        updatePuppy={updatePuppy}
+                        inputType="text">
+                          breed:
+                      </EditPuppy>
+                    
+                      <p>Puppy Id: {puppy.puppyId.toString()}</p>
+                    </div>
+                    <div>
+                      { more?
+                          <>
+                            { editPuppy?
+                              <div className='edit-puppy-options'>
+                                <button className="button-primary" onClick={()=>{setTrigger(!trigger); handleEditPuppy('set to false'); displayMessage('puppy updated!')}}>Update puppy</button>
+                                <button className="button-secondary" onClick={()=>handleEditPuppy('set to false')}>Cancel</button>
+                              </div> :
+                              <div className='column m10'>
+                                <button className="button-primary" onClick={()=>handleEditPuppy('edit')}>Edit puppy</button>
+                                <button className="button-secondary delete"onClick={()=>deletePuppy(puppy.puppyId.toString())}>Delete {puppy.name}</button>
+                              </div>
+                            }
 
-        <article className='column'>
+                            {message?
+                              <p>{message}</p> :
+                              null
+                            }
+                            <button className="button-secondary close" onClick={()=>setMore(false)}>close</button>
+                          </> : 
+                          <button className="button-primary" onClick={()=>setMore(true)}>options</button>
+                        }
+                    </div>
+                  </div> 
+                </div>
+              </> :
+              null
+              }
+            </article>
+
+        <article className='column' ref={allPuppiesSection}>
+          
             {puppies?
-              <div className='puppy-list' ref={allPuppiesSection}>
+              <div className='puppy-list'>
                 {puppies.puppies.map((puppy) => {
                   return (
                     <div 

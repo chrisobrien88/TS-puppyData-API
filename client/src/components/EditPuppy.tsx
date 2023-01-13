@@ -30,7 +30,8 @@ const EditPuppy = ({editState, puppyValue, editTarget, setPuppy, puppy, setEditS
                     <button onClick={(e)=>{
                     e.preventDefault();
                     setEditState(false);
-                    updatePuppy(puppyId)}
+                    updatePuppy(puppyId);
+                    }
                     }>confirm</button>
                 </div> :
                 <div className='row'>

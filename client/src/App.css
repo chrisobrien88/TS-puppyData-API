@@ -1,6 +1,17 @@
 * {
   box-sizing: border-box;
   margin: 0;
+  /* border:1px solid rgba(255, 0, 0, 0.5); */
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;  
+  margin-top: 64px;
 }
 
 .App-header {
@@ -11,12 +22,16 @@
   align-items: center;
   justify-content: space-between;
   color: white;
-  position: sticky;
+  position: fixed;
+  top: 0;
   width: 100%;
+  z-index: 1;
 }
 
 .nav-search {
  margin: 10px 5px;
+ z-index: 3;
+
 }
 
 .nav-search > button {
@@ -49,12 +64,109 @@
   margin: 10px;
 }
 
+.button-primary {
+  background-color: #23454e;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.button-primary:hover {
+  background-color: #4cafc7;
+  color: rgb(10, 9, 37);
+  transition: 0.5s;
+}
+
+.button-secondary {
+  background-color: #676767;
+  color: rgb(255, 255, 255);
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.button-secondary:hover {
+  background-color: #e7e7e7;
+  color: rgb(59, 59, 59);
+  transition: 0.5s;
+}
+
+.button-tertiary {
+  background-color: transparent;
+  color: rgb(85, 85, 85);
+  border: none;
+  border-radius: 4px;
+  padding: 10px 10px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.button-secondary:hover {
+  background-color: #e7e7e7;
+  color: rgb(59, 59, 59);
+  transition: 0.5s;
+}
+
+.delete {
+  background-color: #b84868;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 5px 10px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.close{
+  position: absolute;
+  border-radius: 20px;
+  color:rgb(158, 158, 158);
+  top: -3px;
+  right: -3px;
+  cursor: pointer;
+}
+
+.close:hover {
+  background-color: #909090;
+  box-shadow: 0px 0px 15px 2px rgba(102, 102, 102, 0.6);
+  color: white;
+}
+
+.next {
+  position: absolute;
+  font-size: 30px;
+  color:rgb(158, 158, 158);
+  top: 50%;
+  right: -30px;
+  cursor: pointer;
+  z-index: 2;
+  padding: 5px;
+}
+
+.previous {
+  position: absolute;
+  font-size: 30px;
+  color:rgb(158, 158, 158);
+  top: 50%;
+  left: -30px;
+  cursor: pointer;
+  padding: 5px;
+}
+
+
+
 .App-link {
   color: #61dafb;
 }
 
 .add-puppy-form {
   background-color: #282c34;
+  width: 100%;
   color: white;
 }
 
@@ -64,7 +176,7 @@
 
 .welcome-page {
   width: 100%;
-  height: 75vh;
+  height: 85vh;
 }
 
 .welcome-page-section {
@@ -77,10 +189,10 @@
   background-size: cover;
 }
 
-.welcome-page-text-container {
+.welcome-page-container {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   height: 100%;
   width: 100%;
@@ -88,9 +200,24 @@
   color: white;
 }
 
-.welcome-page-text-container > h1 {
+.welcome-page-text {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  margin-left: 80px;
+  justify-content: center;
+  width: 60%;
+  color: white;
+}
+.welcome-page-text>* {
+  margin: 10px 0;
+}
+.welcome-page-text > h1 {
   font-size: 4rem;
-  margin: 0;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .choose-image {
@@ -128,4 +255,9 @@
   color: white;
   position:absolute;
   z-index: 2;
+}
+
+.image-small {
+  width: 200px;
+  height: auto;
 }

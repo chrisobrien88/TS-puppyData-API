@@ -8,20 +8,19 @@ interface AddNewPuppyProps {
     postNewPuppy: (newPuppy: any) => void
     setAddNewPuppy: React.Dispatch<React.SetStateAction<Boolean>>
     addNewPuppy: Boolean
-    children: React.ReactNode
 }
 
 interface IImage {
     id: String;
     urls: {
         small: String;
+        regular: String;
     };
     alt_description: String;
 }
 
-const AddNewPuppy = ({setNewPuppy, newPuppy, postNewPuppy, setAddNewPuppy, addNewPuppy, children}: AddNewPuppyProps) => {
+const AddNewPuppy = ({setNewPuppy, newPuppy, postNewPuppy, setAddNewPuppy, addNewPuppy}: AddNewPuppyProps) => {
 
-    const theme = useContext(ThemeContext)
     const [images, setImages] = useState<IImage[] | [] >([])
     const [query, setQuery] = useState<string>('')
     const [page, setPage] = useState<number>(1)
@@ -39,7 +38,6 @@ const AddNewPuppy = ({setNewPuppy, newPuppy, postNewPuppy, setAddNewPuppy, addNe
 
   return (
     <div className='add-puppy-form column' >
-        <p>{theme}</p>
         <form className="input column">
             <label>Name:</label>
             <input type="text" name="name" onChange={(e)=>setNewPuppy({...newPuppy, name: e.target.value})}/>
@@ -47,18 +45,18 @@ const AddNewPuppy = ({setNewPuppy, newPuppy, postNewPuppy, setAddNewPuppy, addNe
             <input type="date" name="dob" onChange={(e)=>setNewPuppy({...newPuppy, dob: e.target.value})}/>
             <label>Breed:</label>
             <input type="text" name="breed" onChange={(e)=>setNewPuppy({...newPuppy, breed: e.target.value})}/>
+            <button onClick={(e)=>{setQuery(newPuppy.breed); setPage(1); e.preventDefault()}}>Search for images</button>
             <div className='chosen-image'>
-            {newPuppy.image? <img onClick={()=>setNewPuppy({...newPuppy, image: ''})} src={newPuppy.image}></img> : null}
+            {newPuppy.image? <img className="image-small" onClick={()=>setNewPuppy({...newPuppy, image: ''})} src={newPuppy.image}></img> : null}
             </div>
         </form>
-        <button onClick={()=>postNewPuppy(newPuppy)}>submit</button>
+        <button onClick={()=>{postNewPuppy(newPuppy); setPage(0); setAddNewPuppy(!addNewPuppy); setNewPuppy(null)  }}>submit</button>
         <button onClick={()=>setAddNewPuppy(!addNewPuppy)}> cancel </button>
-        <button onClick={()=>{setQuery(newPuppy.breed); setPage(1)}}>Search for images</button>
+        
         {images?
             <div className='row'>
                 {page>1? <button onClick={()=>setPage(Number(page-1))}>previous page</button> : null}
                 <button onClick={()=>setPage(Number(page+1))}>next page</button>
-                
             </div> : null
         }
         
@@ -67,7 +65,8 @@ const AddNewPuppy = ({setNewPuppy, newPuppy, postNewPuppy, setAddNewPuppy, addNe
             <>  {images.map((image, index) => {
             return (
                 <div key={index}>
-                    <img src={String(image.urls.small)} alt={String(image.urls.small)} onClick={()=>setNewPuppy({...newPuppy, image: image.urls.small.toString()})}/>
+                    <img src={String(image.urls.small)} alt={String(image.urls.small)} onClick={()=>setNewPuppy({...newPuppy, image: image.urls.small.toString(), imageLarge: image.urls.regular.toString()})
+                    }/>
                 </div>
             )
             })}

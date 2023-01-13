@@ -25,6 +25,7 @@ interface IPuppies {
   breed: string;
   dob: string;
   image: string;
+  imageLarge: string;
 }
 
 app.get('/api/puppies', (_req: Request, res: Response) => {
@@ -67,7 +68,8 @@ app.post('/api/puppies', (req: Request, res: Response) => {
     name: newPuppyData.name,
     dob: newPuppyData.dob,
     breed: newPuppyData.breed,
-    image: newPuppyData.image
+    image: newPuppyData.image,
+    imageLarge: newPuppyData.imageLarge
   }
   puppyData.puppies.push(newPuppy);
   console.log(newPuppy)
